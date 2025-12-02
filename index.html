@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>המשחק של תבור - גרסת האולטרה</title>
+    <title>המשחק של תבור - גרסה נקייה ומושלמת</title>
     <style>
-        /* CSS: עיצוב "משחק מגניב" עם צבעים נקיים ויפים */
+        /* CSS: עיצוב נקי, יפה וזורם לילדה בת 9 */
         body {
             font-family: 'Assistant', Arial, sans-serif;
             background-color: #F0F8FF; /* Alice Blue - רקע רגוע */
-            background-image: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 100%); /* הוספת שיפוע עדין */
+            background-image: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 100%);
             text-align: center;
             direction: rtl;
             margin: 0;
@@ -21,7 +21,7 @@
             background: #FFFFFF;
             padding: 40px;
             border-radius: 30px;
-            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.2); /* צל סגול חזק אך נקי */
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.2);
             border: 6px solid #FF69B4; /* Hot Pink - גבול בולט */
         }
         h1 {
@@ -62,12 +62,12 @@
 
         /* מילה כתובה */
         #word-text {
-            font-size: 3.5em; /* מילה גדולה וברורה */
+            font-size: 3.5em; 
             font-weight: 900;
-            color: #32CD32; /* Lime Green - צבע קופץ */
+            color: #483D8B; /* Dark Slate Blue - כחול-סגול נקי */
             margin-bottom: 20px;
             min-height: 60px;
-            direction: ltr; /* יישור לאנגלית */
+            direction: ltr;
         }
 
         /* כפתור הפעלת אודיו */
@@ -94,8 +94,8 @@
             gap: 20px;
         }
         .option-btn {
-            background-color: #E0FFFF; /* Light Cyan */
-            border: 3px solid #FF69B4; /* Hot Pink */
+            background-color: #E0FFFF; 
+            border: 3px solid #FF69B4; 
             padding: 30px 15px;
             font-size: 1.5em;
             border-radius: 20px;
@@ -111,21 +111,25 @@
         }
 
         .feedback {
-            height: 60px;
-            margin-top: 25px;
+            /* הפידבק החיובי הופך לכחול-סגול נקי */
+            height: 60px; 
+            margin-top: 10px;
+            margin-bottom: 15px;
             font-size: 2em;
             font-weight: 800;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
+        
+        /* כפתור חזרה */
         .back-btn {
-            background-color: #C0C0C0; /* Silver */
+            background-color: #C0C0C0; 
             color: #4B0082;
             border: none;
             padding: 10px 25px;
             font-size: 1.2em;
             border-radius: 10px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 25px;
             transition: background-color 0.2s;
         }
         .back-btn:hover {
@@ -133,9 +137,41 @@
         }
         .hidden { display: none; }
         
-        /* Progress bar */
-        .progress-bar {
-            background-color: #FF69B4; /* Hot Pink progress */
+        /* --- MEDIA QUERY: התאמה למסכי מובייל (פחות מ-600 פיקסלים) --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+                margin-top: 10px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            /* הקטנת גודל הפונט של המילה הכתובה - עכשיו קטנה יותר! */
+            #word-text {
+                font-size: 2em; 
+                margin-bottom: 10px;
+            }
+            .play-btn {
+                padding: 15px 30px;
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            .feedback {
+                font-size: 1.5em;
+                height: 40px; 
+                margin-top: 5px; 
+            }
+            .options-grid {
+                gap: 10px;
+            }
+            .option-btn {
+                padding: 20px 10px;
+                font-size: 1.2em;
+                min-height: 70px;
+            }
+            .back-btn {
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
@@ -170,7 +206,7 @@
 </div>
 
 <div class="container hidden" id="end-screen">
-    <h1 style="font-size: 3em;">Well Done! 🏆</h1>
+    <h1 style="font-size: 3em; color: #4682B4;">Well Done! 🏆</h1>
     <h2>סיימת את הסבב, כל הכבוד תבור!</h2>
     <p style="font-size: 1.8em;">הציון הסופי שלך: <span id="final-score"></span></p>
     <button class="mode-btn" onclick="restartGame()">שחקי שוב</button>
@@ -199,15 +235,14 @@
         { eng: "house", heb: "בית" }
     ];
 
-    // מילים קצרות (אותיות נלמדות + Sight Words)
     const VOCABULARY_LETTERS = [
+        // מילים קצרות (אותיות נלמדות + Sight Words)
         { eng: "dad", heb: "אבא" }, { eng: "bag", heb: "תיק" }, { eng: "and", heb: "ו..." }, 
         { eng: "bad", heb: "רע" }, { eng: "Ann", heb: "אן (שם)" }, { eng: "banana", heb: "בננה" }, 
         { eng: "Dan", heb: "דן (שם)" }, { eng: "add", heb: "להוסיף / חבר" }, { eng: "band", heb: "להקה" },
         { eng: "Look", heb: "תסתכלי / להסתכל" }, { eng: "I am", heb: "אני" }
     ];
 
-    // **פידבקים בעברית בלבד עם השם "תבור"**
     const POSITIVE_PHRASES = ["תבור, כל הכבוד!", "תבור, את פשוט מדהימה!", "וואו, תבור, איזו חכמה!", "תבור, המשיכי כך!", "תבור, אלופה!"];
     const SUPPORTIVE_PHRASES = ["תבור, נסי שוב.", "תבור, כמעט! נסי שוב.", "תבור, לא נורא! תנסי שוב.", "תבור, תתעודדי, את יכולה!"];
 
@@ -215,9 +250,11 @@
     let currentPool = [];
     let currentIndex = 0;
     let score = 0;
-    let modeSource = null; // הקבוצה הנבחרת: FULL או LETTERS
+    let modeSource = null;
     const TOTAL_QUESTIONS = 15;
     let isProcessing = false;
+    const SUCCESS_COLOR = "#4682B4"; // Steel Blue - כחול נקי
+    const WRONG_COLOR = "#FF6347"; // Tomato - אדום-כתום מעודד
 
     // --- Speech Setup ---
     const synth = window.speechSynthesis;
@@ -235,14 +272,12 @@
     }
 
     function startGame(mode) {
-        // בחירת מאגר המילים לפי המצב
         modeSource = (mode === 'FULL') ? VOCABULARY_FULL : VOCABULARY_LETTERS;
         
         currentIndex = 0;
         score = 0;
         document.getElementById('score').innerText = score;
         
-        // יצירת סבב של 15 שאלות
         currentPool = [...modeSource];
         shuffleArray(currentPool);
         currentPool = currentPool.slice(0, TOTAL_QUESTIONS);
@@ -261,19 +296,15 @@
         document.getElementById('feedback').innerText = "";
         document.getElementById('current-q').innerText = currentIndex + 1;
         
-        // **הצגת המילה הכתובה!**
         document.getElementById('word-text').innerText = currentItem.eng;
         
-        // עדכון פס התקדמות
         const progress = (currentIndex / TOTAL_QUESTIONS) * 100;
         document.getElementById('progress-bar').style.width = progress + "%";
 
-        // יצירת אפשרויות תשובה (הכול תרגומים לעברית)
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
         
-        // בחירת מסיחים (תרגומים בעברית)
-        const allHebrew = VOCABULARY_FULL.map(item => item.heb); // **משתמשים בכל התרגומים כמסיחים כדי שיהיה קשה יותר**
+        const allHebrew = VOCABULARY_FULL.map(item => item.heb);
         let distractors = allHebrew.filter(heb => heb !== currentItem.heb);
         shuffleArray(distractors);
         
@@ -289,7 +320,6 @@
             optionsContainer.appendChild(btn);
         });
 
-        // הפעלת אודיו אוטומטית אחרי השהיה
         setTimeout(() => playCurrentWord(), 600);
         isProcessing = false;
     }
@@ -310,24 +340,22 @@
         const feedbackEl = document.getElementById('feedback');
         
         if (selectedHebrew === correctHebrew) {
-            // נכון!
             isProcessing = true;
             score++;
             document.getElementById('score').innerText = score;
             
-            feedbackEl.style.color = "#4CAF50"; // ירוק
+            feedbackEl.style.color = SUCCESS_COLOR; // צבע כחול חדש להצלחה
             feedbackEl.innerText = POSITIVE_PHRASES[Math.floor(Math.random() * POSITIVE_PHRASES.length)];
-            btnElement.style.backgroundColor = "#B0E0E6"; 
+            btnElement.style.backgroundColor = "#B0E0E6"; // חיווי הצלחה על הכפתור
 
             setTimeout(() => {
                 currentIndex++;
                 loadQuestion();
             }, 1500);
         } else {
-            // לא נכון
-            feedbackEl.style.color = "#FF6347"; // כתום/אדום מעודד
+            feedbackEl.style.color = WRONG_COLOR; // צבע טעות
             feedbackEl.innerText = SUPPORTIVE_PHRASES[Math.floor(Math.random() * SUPPORTIVE_PHRASES.length)];
-            btnElement.style.backgroundColor = "#FFC0CB"; 
+            btnElement.style.backgroundColor = "#FFC0CB"; // חיווי טעות על הכפתור
             btnElement.disabled = true;
         }
     }
