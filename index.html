@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>המשחק של תבור - גרסת האולטרה</title>
+    <style>
+        /* CSS: עיצוב "משחק מגניב" עם צבעים נקיים ויפים */
+        body {
+            font-family: 'Assistant', Arial, sans-serif;
+            background-color: #F0F8FF; /* Alice Blue - רקע רגוע */
+            background-image: linear-gradient(135deg, #f0f8ff 0%, #e6e6fa 100%); /* הוספת שיפוע עדין */
+            text-align: center;
+            direction: rtl;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.2); /* צל סגול חזק אך נקי */
+            border: 6px solid #FF69B4; /* Hot Pink - גבול בולט */
+        }
+        h1 {
+            color: #8A2BE2; /* Blue Violet */
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #4B0082; /* Indigo */
+            margin-bottom: 30px;
+            font-size: 1.6em;
+        }
+        .score-board {
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        
+        /* כפתורי בחירת מצב */
+        .mode-btn {
+            background-color: #9370DB; /* Medium Purple */
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.6em;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            margin: 15px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        .mode-btn:hover {
+            background-color: #6A5ACD;
+            transform: translateY(-3px);
+        }
+
+        /* מילה כתובה */
+        #word-text {
+            font-size: 3.5em; /* מילה גדולה וברורה */
+            font-weight: 900;
+            color: #32CD32; /* Lime Green - צבע קופץ */
+            margin-bottom: 20px;
+            min-height: 60px;
+            direction: ltr; /* יישור לאנגלית */
+        }
+
+        /* כפתור הפעלת אודיו */
+        .play-btn {
+            background-color: #FFD700; /* Gold */
+            color: #4B0082;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.8em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 35px;
+            box-shadow: 0 6px 15px rgba(255, 215, 0, 0.5);
+        }
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* רשת אפשרויות התשובה */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .option-btn {
+            background-color: #E0FFFF; /* Light Cyan */
+            border: 3px solid #FF69B4; /* Hot Pink */
+            padding: 30px 15px;
+            font-size: 1.5em;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+            font-weight: bold;
+            min-height: 90px;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #AFEEEE;
+            transform: scale(1.02);
+        }
+
+        .feedback {
+            height: 60px;
+            margin-top: 25px;
+            font-size: 2em;
+            font-weight: 800;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .back-btn {
+            background-color: #C0C0C0; /* Silver */
+            color: #4B0082;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        .back-btn:hover {
+            background-color: #A9A9A9;
+        }
+        .hidden { display: none; }
+        
+        /* Progress bar */
+        .progress-bar {
+            background-color: #FF69B4; /* Hot Pink progress */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="start-screen">
+    <h1>ברוכה הבאה תבור! 👑</h1>
+    <h2>בחרי אתגר:</h2>
+    <button class="mode-btn" onclick="startGame('FULL')">📚 1. מילים לתרגול (הכול)</button>
+    <button class="mode-btn" onclick="startGame('LETTERS')">🅰️ 2. אותיות לתרגול (מילים קצרות)</button>
+</div>
+
+<div class="container hidden" id="game-screen">
+    <div class="score-board">
+        ניקוד: <span id="score">0</span> | שאלה: <span id="current-q">0</span>/15
+    </div>
+    
+    <div id="word-text"></div>
+    
+    <button class="play-btn" onclick="playCurrentWord()">🔊 לחצי לשמוע</button>
+    
+    <div id="feedback" class="feedback"></div>
+
+    <div class="options-grid" id="options-container">
+        </div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <button class="back-btn" onclick="goBack()">🏠 חזרה לבחירת אתגר</button>
+</div>
+
+<div class="container hidden" id="end-screen">
+    <h1 style="font-size: 3em;">Well Done! 🏆</h1>
+    <h2>סיימת את הסבב, כל הכבוד תבור!</h2>
+    <p style="font-size: 1.8em;">הציון הסופי שלך: <span id="final-score"></span></p>
+    <button class="mode-btn" onclick="restartGame()">שחקי שוב</button>
+</div>
+
+<script>
+    // --- Data ---
+    const VOCABULARY_FULL = [
+        // מילים מהרשימה המקורית
+        { eng: "boy", heb: "ילד" }, { eng: "girl", heb: "ילדה" }, { eng: "mom", heb: "אמא" },
+        { eng: "cat", heb: "חתול" }, { eng: "dog", heb: "כלב" }, { eng: "black", heb: "שחור" },
+        { eng: "white", heb: "לבן" }, { eng: "red", heb: "אדום" }, { eng: "blue", heb: "כחול" },
+        { eng: "zero", heb: "אפס" }, { eng: "one", heb: "אחד" }, { eng: "two", heb: "שתיים" },
+        { eng: "three", heb: "שלוש" }, { eng: "four", heb: "ארבע" }, { eng: "five", heb: "חמש" },
+        { eng: "six", heb: "שש" }, { eng: "seven", heb: "שבע" }, { eng: "eight", heb: "שמונה" },
+        { eng: "nine", heb: "תשע" }, { eng: "ten", heb: "עשר" }, { eng: "eleven", heb: "אחד עשרה" },
+        { eng: "twelve", heb: "שתים עשרה" }, { eng: "apple", heb: "תפוח" }, { eng: "man", heb: "איש" },
+        { eng: "woman", heb: "אישה" }, { eng: "green", heb: "ירוק" }, { eng: "yellow", heb: "צהוב" },
+        { eng: "orange", heb: "כתום" }, { eng: "baby", heb: "תינוק/ת" }, { eng: "book", heb: "ספר" }, 
+        { eng: "box", heb: "קופסה" }, { eng: "big", heb: "גדול" }, { eng: "small", heb: "קטן" }, 
+        { eng: "notebook", heb: "מחברת" }, { eng: "nose", heb: "אף" }, { eng: "computer", heb: "מחשב" }, 
+        { eng: "sister", heb: "אחות" }, { eng: "brother", heb: "אח" }, { eng: "dad", heb: "אבא" }, 
+        { eng: "desk", heb: "שולחן עבודה" }, { eng: "duck", heb: "ברווז" }, { eng: "sad", heb: "עצוב" }, 
+        { eng: "bad", heb: "רע" }, { eng: "grandma", heb: "סבתא" }, { eng: "grandpa", heb: "סבא" }, 
+        { eng: "gift", heb: "מתנה" }, { eng: "gray", heb: "אפור" }, { eng: "door", heb: "דלת" }, 
+        { eng: "house", heb: "בית" }
+    ];
+
+    // מילים קצרות (אותיות נלמדות + Sight Words)
+    const VOCABULARY_LETTERS = [
+        { eng: "dad", heb: "אבא" }, { eng: "bag", heb: "תיק" }, { eng: "and", heb: "ו..." }, 
+        { eng: "bad", heb: "רע" }, { eng: "Ann", heb: "אן (שם)" }, { eng: "banana", heb: "בננה" }, 
+        { eng: "Dan", heb: "דן (שם)" }, { eng: "add", heb: "להוסיף / חבר" }, { eng: "band", heb: "להקה" },
+        { eng: "Look", heb: "תסתכלי / להסתכל" }, { eng: "I am", heb: "אני" }
+    ];
+
+    // **פידבקים בעברית בלבד עם השם "תבור"**
+    const POSITIVE_PHRASES = ["תבור, כל הכבוד!", "תבור, את פשוט מדהימה!", "וואו, תבור, איזו חכמה!", "תבור, המשיכי כך!", "תבור, אלופה!"];
+    const SUPPORTIVE_PHRASES = ["תבור, נסי שוב.", "תבור, כמעט! נסי שוב.", "תבור, לא נורא! תנסי שוב.", "תבור, תתעודדי, את יכולה!"];
+
+    // --- State ---
+    let currentPool = [];
+    let currentIndex = 0;
+    let score = 0;
+    let modeSource = null; // הקבוצה הנבחרת: FULL או LETTERS
+    const TOTAL_QUESTIONS = 15;
+    let isProcessing = false;
+
+    // --- Speech Setup ---
+    const synth = window.speechSynthesis;
+
+    // --- Screen Logic ---
+    function showScreen(id) {
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('end-screen').classList.add('hidden');
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goBack() {
+        showScreen('start-screen');
+    }
+
+    function startGame(mode) {
+        // בחירת מאגר המילים לפי המצב
+        modeSource = (mode === 'FULL') ? VOCABULARY_FULL : VOCABULARY_LETTERS;
+        
+        currentIndex = 0;
+        score = 0;
+        document.getElementById('score').innerText = score;
+        
+        // יצירת סבב של 15 שאלות
+        currentPool = [...modeSource];
+        shuffleArray(currentPool);
+        currentPool = currentPool.slice(0, TOTAL_QUESTIONS);
+
+        showScreen('game-screen');
+        loadQuestion();
+    }
+    
+    function loadQuestion() {
+        if (currentIndex >= TOTAL_QUESTIONS) {
+            endGame();
+            return;
+        }
+
+        const currentItem = currentPool[currentIndex];
+        document.getElementById('feedback').innerText = "";
+        document.getElementById('current-q').innerText = currentIndex + 1;
+        
+        // **הצגת המילה הכתובה!**
+        document.getElementById('word-text').innerText = currentItem.eng;
+        
+        // עדכון פס התקדמות
+        const progress = (currentIndex / TOTAL_QUESTIONS) * 100;
+        document.getElementById('progress-bar').style.width = progress + "%";
+
+        // יצירת אפשרויות תשובה (הכול תרגומים לעברית)
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+        
+        // בחירת מסיחים (תרגומים בעברית)
+        const allHebrew = VOCABULARY_FULL.map(item => item.heb); // **משתמשים בכל התרגומים כמסיחים כדי שיהיה קשה יותר**
+        let distractors = allHebrew.filter(heb => heb !== currentItem.heb);
+        shuffleArray(distractors);
+        
+        let optionsText = distractors.slice(0, Math.min(3, distractors.length));
+        optionsText.push(currentItem.heb);
+        shuffleArray(optionsText);
+
+        optionsText.forEach(hebText => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = hebText; 
+            btn.onclick = () => checkAnswer(hebText, btn, currentItem.heb);
+            optionsContainer.appendChild(btn);
+        });
+
+        // הפעלת אודיו אוטומטית אחרי השהיה
+        setTimeout(() => playCurrentWord(), 600);
+        isProcessing = false;
+    }
+
+    function playCurrentWord() {
+        if (currentIndex < currentPool.length) {
+            const word = currentPool[currentIndex].eng;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9; 
+            synth.speak(utterance);
+        }
+    }
+
+    function checkAnswer(selectedHebrew, btnElement, correctHebrew) {
+        if (isProcessing) return;
+        
+        const feedbackEl = document.getElementById('feedback');
+        
+        if (selectedHebrew === correctHebrew) {
+            // נכון!
+            isProcessing = true;
+            score++;
+            document.getElementById('score').innerText = score;
+            
+            feedbackEl.style.color = "#4CAF50"; // ירוק
+            feedbackEl.innerText = POSITIVE_PHRASES[Math.floor(Math.random() * POSITIVE_PHRASES.length)];
+            btnElement.style.backgroundColor = "#B0E0E6"; 
+
+            setTimeout(() => {
+                currentIndex++;
+                loadQuestion();
+            }, 1500);
+        } else {
+            // לא נכון
+            feedbackEl.style.color = "#FF6347"; // כתום/אדום מעודד
+            feedbackEl.innerText = SUPPORTIVE_PHRASES[Math.floor(Math.random() * SUPPORTIVE_PHRASES.length)];
+            btnElement.style.backgroundColor = "#FFC0CB"; 
+            btnElement.disabled = true;
+        }
+    }
+
+    function endGame() {
+        document.getElementById('progress-bar').style.width = "100%";
+        showScreen('end-screen');
+        document.getElementById('final-score').innerText = score + " / " + TOTAL_QUESTIONS;
+    }
+
+    function restartGame() {
+        goBack(); 
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Start
+    window.onload = () => showScreen('start-screen');
+</script>
+
+</body>
+</html>
